@@ -1,121 +1,80 @@
-import React, {  useState } from "react";
+import React from "react";
+import '../styles/App.css';
 
 const App = () => {
-  let [ErrorMessage, setErrorMessage] = useState("");
-  const [input, setinput] = useState([
-    {
-      name: "",
-      email: "",
-      gender: "male",
-      phone: "",
-      password: ""
-    }
-  ]);
-  function ValidateEmail(mail) {
-    if (
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        mail
-      )
-    ) {
-      return true;
-    }
-
-    return false;
+  const st = {
+    name:"",
+    email:"",
+    password:"",
+    gender:"male",
+    phone:""
   }
-  const handleclick = () => {
-    let main = input[0];
-    console.log(main);
-    let temp = main["name"];
-    let address = main["email"];
-    let password = main["password"];
-    let gender = main["gender"];
-    let phone = main["phone"];
-    if (
-      temp === "" ||
-      address === "" ||
-      password === "" ||
-      gender === "" ||
-      phone === ""
-    ) {
-      setErrorMessage("All fields are mandatory");
-      return;
-    }
-    let cnt1 = 0;
-    let cnt2 = 0;
-    for (let i = 0; i < temp.length; i++) {
-      if (
-        (temp[i] >= "a" && temp[i] <= "z") ||
-        (temp[i] >= "A" && temp[i] <= "Z")
-      ) {
-        cnt1++;
-      } else if (Number(temp[i]) >= 0 && Number(temp[i]) <= 9) {
-        cnt2++;
-      }
-      if (cnt1 && cnt2) {
-        break;
-      }
-    }
+  const [formState,setFormState] = React.useState(st);
+ 
+  const [message,setMessage] = React.useState("");
 
-    if (!cnt1 || !cnt2) {
-      setErrorMessage("Name is not alphanumeric");
+  const handleSubmit= ()=>{
+    
+    console.log(formState);
+    if(formState.name === "" || formState.email === "" ||
+        formState.password === "" || formState.phone === "" || formState.gender === ""){
+      setMessage("All fields are mandatory");
       return;
-    } else if (!ValidateEmail(address)) {
-      setErrorMessage("Email must contain @");
-      return;
+    }else if(!formState.name.match(/^[a-zA-Z0-9_ ]*$/)){
+      setMessage("Name is not alphanumeric");
+    }else if(!formState.email.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]/)){
+      setMessage("Email must contain @");
+    }else if(formState.gender !== "male" && formState.gender !== "female" && formState.gender !== "others"){
+      setMessage("Please identify as male, female or others")
+    }else if(!formState.phone.match(/^[0-9]*$/)){
+      setMessage("Phone Number must contain only numbers");
+    }else if(formState.password.length < 6){
+      setMessage("Password must contain atleast 6 letters");
+    }else {
+      setMessage(`Hello ${formState.email.split('@')[0]}`);
     }
-
-    if (isNaN(main["phone"])) {
-      setErrorMessage("Phone Number must contain only numbers");
-      return;
-    }
-    if (main["password"].length < 6) {
-      setErrorMessage("Password must contain atleast 6 letters");
-      return;
-    }
-    let info = main["email"];
-    info = info.substr(0, info.indexOf("@"));
-    console.log(info);
-    setErrorMessage("Hello " + info);
-  };
-  const handlechange = (e) => {
-    let dup = input;
-    dup = dup[0];
-    dup[e.target.name] = e.target.value;
-    setinput([dup]);
-  };
+  }
   return (
     <div id="main">
-      <div>{ErrorMessage}</div>
-      <label>Name:</label>
-      <input data-testid="name" name="name" onChange={handlechange} />
-      <br />
-      <label>Email address:</label>
-      <input data-testid="email" name="email" onChange={handlechange} />
-      <br />
-      <label>Gender:</label>
-      <input
-        value="male"
-        data-testid="gender"
-        name="gender"
-        onChange={handlechange}
-      />
-      <br />
-      <label>Phone number:</label>
-      <input data-testid="phoneNumber" name="phone" onChange={handlechange} />
-      <br />
-      <label>Password:</label>
-      <input
-        data-testid="password"
-        type="password"
-        name="password"
-        onChange={handlechange}
-      />
-      <br />
-      <button data-testid="submit" onClick={handleclick}>
-        Submit
-      </button>
+          Name:{" "}
+          <input  
+            type="text" 
+            value={formState.name} 
+            onChange={(e)=>setFormState({...formState,name:e.target.value})} 
+            data-testid = 'name' />
+          Email:{" "}
+          <input  
+            type="text" 
+            value={formState.email} 
+            onChange={(e)=>setFormState({...formState,email:e.target.value})}
+            data-testid = 'email' />
+          Gender:
+          <input 
+            data-testid = 'gender'
+            type="text" 
+            value={formState.gender}
+            onChange={(e)=>setFormState({...formState,gender:e.target.value})} />
+          Phone Number:
+          <input 
+            data-testid = 'phoneNumber'
+            type="text" 
+            value={formState.phone} 
+            onChange={(e)=>setFormState({...formState,phone:e.target.value})} />
+          Password:
+          <input 
+            data-testid = 'password'
+            type='password'
+            value={formState.password} 
+            onChange={(e)=>setFormState({...formState,password:e.target.value})} />
+        <button 
+          data-testid = 'submit'
+          type="submit" 
+          value="Submit"
+          onClick={handleSubmit} >Submit</button>
+  <p>{message}</p>
     </div>
-  );
-};
+  )
+}
+
 
 export default App;
