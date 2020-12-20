@@ -24,7 +24,7 @@ const App = () => {
     ) {
       setMessage("All fields are mandatory");
       return;
-    } else if (!formState.name.match(/^[a-zA-Z0-9_ ]/)) {
+    } else if (!formState.name.match(/^[a-zA-Z0-9_ ]*$/)) {
       setMessage("Name is not alphanumeric");
     } else if (!formState.email.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]/)) {
       setMessage("Email must contain @");
@@ -34,7 +34,7 @@ const App = () => {
       formState.gender !== "others"
     ) {
       setMessage("Please identify as male, female or others");
-    } else if (!formState.phone.match(/^[0-9]/)) {
+    } else if (!formState.phone.match(/^[0-9]*$/)) {
       setMessage("Phone Number must contain only numbers");
     } else if (formState.password.length < 6) {
       setMessage("Password must contain atleast 6 letters");
